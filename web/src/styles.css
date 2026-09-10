@@ -1,9 +1,79 @@
+/* Notion design system (DESIGN.md) applied to the capacity grid.
+ *
+ * DESIGN.md documents a marketing site — hero bands, pricing tiers, pastel
+ * feature cards. This is a dense internal table, so the parts that transfer
+ * are the token layer, the typography ramp, and the input/button/tag-chip/
+ * table components. Section rhythm (96px) and hero padding (120px) are
+ * marketing scale and are stepped down to app scale here.
+ */
+
 :root {
-  color: #172a2d;
-  background: #f2efe7;
-  font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  /* Brand & primary */
+  --primary: #5645d4;
+  --primary-pressed: #4534b3;
+  --on-primary: #ffffff;
+  --brand-navy: #0a1530;
+  --brand-navy-mid: #1a2a52;
+  --brand-orange: #dd5b00;
+  --brand-orange-deep: #793400;
+  --brand-green: #1aae39;
+
+  /* Card tints */
+  --card-tint-peach: #ffe8d4;
+  --card-tint-mint: #d9f3e1;
+
+  /* Surface */
+  --canvas: #ffffff;
+  --surface: #f6f5f4;
+  --surface-soft: #fafaf9;
+  --hairline: #e5e3df;
+  --hairline-soft: #ede9e4;
+  --hairline-strong: #c8c4be;
+
+  /* Text */
+  --ink-deep: #000000;
+  --ink: #1a1a1a;
+  --charcoal: #37352f;
+  --slate: #5d5b54;
+  --steel: #787671;
+  /* stone fails WCAG AA on canvas (2.61:1) and muted worse (1.98:1), so text
+   * uses steel (4.54:1); muted is kept for disabled controls only. */
+  --stone: #a4a097;
+  --muted: #bbb8b1;
+  --on-dark: #ffffff;
+  --on-dark-muted: #a4a097;
+
+  /* Semantic. DESIGN.md scopes error-red to validation, so over-capacity —
+   * a condition to act on, not invalid input — uses the warning family. */
+  --semantic-warning: #dd5b00;
+  --semantic-error: #e03131;
+
+  /* Shape */
+  --rounded-sm: 6px;
+  --rounded-md: 8px;
+  --rounded-lg: 12px;
+  --rounded-full: 9999px;
+
+  /* Spacing */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 20px;
+  --space-xl: 24px;
+  --space-xxl: 32px;
+  --space-xxxl: 40px;
+  --space-section-sm: 48px;
+
+  /* Elevation */
+  --elevation-1: rgba(15, 15, 15, 0.04) 0 1px 2px 0;
+  --elevation-2: rgba(15, 15, 15, 0.08) 0 4px 12px 0;
+
+  /* Notion Sans is not publicly distributable; this is the fallback stack
+   * DESIGN.md documents for it. No webfont request is made. */
+  font-family: Inter, -apple-system, system-ui, "Segoe UI", Helvetica, sans-serif;
+  color: var(--ink);
+  background: var(--canvas);
 }
 
 * { box-sizing: border-box; }
@@ -11,42 +81,14 @@
 body {
   min-width: 320px;
   margin: 0;
-  background: linear-gradient(90deg, rgba(23, 42, 45, 0.035) 1px, transparent 1px) 0 0 / 32px 32px, #f2efe7;
-}
-
-main {
-  width: min(100%, 1680px);
-  margin: 0 auto;
-  padding: clamp(1.5rem, 4vw, 4.5rem);
+  background: var(--canvas);
 }
 
 h1, h2, p { margin-top: 0; }
-
-h1 {
-  max-width: 12ch;
-  margin-bottom: 0.35rem;
-  color: #172a2d;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2.5rem, 6vw, 5.4rem);
-  font-weight: 400;
-  letter-spacing: -0.055em;
-  line-height: 0.95;
-}
-
-.range {
-  margin-bottom: clamp(2.25rem, 5vw, 4.75rem);
-  color: #506266;
-  font-size: 0.83rem;
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
 button, input { font: inherit; }
 button { cursor: pointer; }
-button:disabled, input:disabled { cursor: wait; opacity: 0.62; }
-:focus-visible { outline: 3px solid #006c78; outline-offset: 2px; }
+button:disabled, input:disabled { cursor: not-allowed; opacity: 0.55; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
 .visually-hidden {
   position: absolute;
@@ -60,332 +102,456 @@ button:disabled, input:disabled { cursor: wait; opacity: 0.62; }
   border: 0;
 }
 
-.capacity { min-width: 0; }
+/* Header band --------------------------------------------------------------
+ * hero-band-dark, stepped down from 120px hero padding to app scale. */
+
+.app-band {
+  background: var(--brand-navy);
+  color: var(--on-dark);
+  padding: var(--space-xxxl) var(--space-xxl);
+}
+
+.band-inner, main {
+  width: min(100%, 1280px);
+  margin: 0 auto;
+}
+
+main { padding: var(--space-xxl); }
+
+/* heading-2, stepped from the 80px hero display — this is an app title. */
+.app-band h1 {
+  margin-bottom: var(--space-xs);
+  color: var(--on-dark);
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+/* micro-uppercase */
+.range {
+  margin-bottom: 0;
+  color: var(--on-dark-muted);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Toolbar ----------------------------------------------------------------- */
 
 .capacity-toolbar {
   display: flex;
   align-items: end;
   justify-content: space-between;
-  gap: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 3px solid #172a2d;
+  gap: var(--space-xxl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--hairline);
 }
 
 .eyebrow, .week-kicker {
   display: block;
-  margin-bottom: 0.35rem;
-  color: #657478;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
+  margin-bottom: var(--space-xxs);
+  color: var(--steel);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
-h2 {
+/* heading-3 */
+.capacity-toolbar h2 {
   margin-bottom: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.45rem, 2.5vw, 2rem);
-  font-weight: 400;
-  letter-spacing: -0.025em;
+  color: var(--ink);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.25;
 }
 
 .risk-summary {
   display: flex;
   flex: 0 0 auto;
   align-items: baseline;
-  gap: 0.55rem;
-  margin-bottom: 0.2rem;
-  color: #832b20;
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  gap: var(--space-xs);
+  margin-bottom: 0;
+  color: var(--brand-orange-deep);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .risk-summary > span:first-child {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 2rem;
-  font-weight: 400;
-  letter-spacing: -0.04em;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  text-transform: none;
 }
 
-.table-frame {
-  position: relative;
-  max-width: 100%;
-  overflow: auto;
-  border-bottom: 1px solid #a7aaa2;
-  scrollbar-color: #66777a #dedbd2;
-}
-
-.refresh-line {
-  position: sticky;
-  z-index: 8;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  overflow: hidden;
-  background: #c9c9bf;
-}
-
-.refresh-line::after {
-  position: absolute;
-  width: 32%;
-  height: 100%;
-  background: #006c78;
-  content: "";
-  animation: refresh 1s cubic-bezier(0.76, 0, 0.24, 1) infinite;
-}
-
-@keyframes refresh { from { transform: translateX(-105%); } to { transform: translateX(330%); } }
-
-table {
-  width: max(100%, 920px);
-  border-collapse: separate;
-  border-spacing: 0;
-  color: #26383b;
-  font-variant-numeric: tabular-nums;
-}
-
-caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-
-th, td {
-  min-width: 12rem;
-  padding: 0.9rem 1rem;
-  border-right: 1px solid #cbc9c0;
-  border-bottom: 1px solid #cbc9c0;
-  text-align: left;
-  vertical-align: middle;
-}
-
-thead th {
-  position: sticky;
-  z-index: 3;
-  top: 0;
-  background: #dedbd2;
-  color: #23383b;
-  box-shadow: inset 0 -1px #949b98;
-}
-
-.week-range {
-  display: block;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.05rem;
-  font-weight: 400;
-  white-space: nowrap;
-}
-
-.person-column {
-  position: sticky;
-  z-index: 2;
-  left: 0;
-  width: 18rem;
-  min-width: 18rem;
-  background: #f2efe7;
-  box-shadow: 1px 0 #a7aaa2;
-}
-
-thead .person-column {
-  z-index: 5;
-  background: #dedbd2;
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-tbody tr:hover td, tbody tr:hover .person-column { background-color: #e8e5dc; }
-
-.person-name {
-  display: block;
-  margin-bottom: 0.5rem;
-  overflow-wrap: anywhere;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-.hours-editor { display: flex; align-items: stretch; gap: 0.4rem; }
-
-.hours-control {
-  display: flex;
-  width: 7.8rem;
-  align-items: center;
-  border: 1px solid #8d9692;
-  background: #faf8f2;
-}
-
-.hours-control:focus-within { border-color: #006c78; box-shadow: 0 0 0 2px rgba(0, 108, 120, 0.2); }
-
-.hours-control input {
-  width: 4rem;
-  min-width: 0;
-  padding: 0.38rem 0 0.38rem 0.5rem;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: #172a2d;
-  font-weight: 750;
-}
-
-.hours-control span {
-  color: #59696c;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.save-button, .button {
-  border: 1px solid #172a2d;
-  border-radius: 0;
-  background: transparent;
-  color: #172a2d;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.save-button { min-width: 3.9rem; padding: 0.4rem 0.55rem; }
-.save-button:hover:not(:disabled), .save-button:focus-visible, .button--dark { background: #172a2d; color: #f6f2e8; }
-
-.save-state {
-  display: block;
-  min-height: 1rem;
-  margin-top: 0.25rem;
-  color: #416065;
-  font-size: 0.68rem;
-  font-weight: 700;
-}
-
-.save-state--error { color: #832b20; }
-.capacity-cell { background: rgba(248, 246, 239, 0.72); }
-
-.capacity-cell--over {
-  background: repeating-linear-gradient(-45deg, rgba(131, 43, 32, 0.06) 0 6px, transparent 6px 12px), #f0d9cf;
-  box-shadow: inset 3px 0 #a43c2d;
-}
-
-.hours-ratio { display: block; color: #42575a; font-size: 1rem; white-space: nowrap; }
-
-.hours-ratio strong {
-  color: #172a2d;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.5rem;
-  font-weight: 400;
-}
-
-.over-label, .within-label {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.over-label { color: #832b20; }
-.within-label { color: #5c6c69; }
-
-.grid-state, .notice {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  padding: 1.25rem 0;
-  border-top: 3px solid #172a2d;
-  border-bottom: 1px solid #9ca39f;
-}
-
-.grid-state { justify-content: flex-start; }
-.grid-state strong, .notice strong { font-family: Georgia, "Times New Roman", serif; font-size: 1.1rem; }
-.grid-state p, .notice p { margin: 0.3rem 0 0; color: #536568; }
-.grid-state--error, .notice--warning { color: #6f241c; }
-
-.loader {
-  width: 1.5rem;
-  height: 1.5rem;
-  flex: 0 0 auto;
-  border: 2px solid #98a19d;
-  border-top-color: #006c78;
-  border-radius: 50%;
-  animation: spin 0.75s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-.button { padding: 0.65rem 0.85rem; }
-.button--text { border-color: currentColor; color: #6f241c; }
-
-@media (max-width: 680px) {
-  main { padding: 1.25rem 0 2.5rem 1rem; }
-  h1, .range, .capacity-toolbar, .notice, .grid-state { margin-right: 1rem; }
-  .capacity-toolbar { align-items: flex-start; flex-direction: column; gap: 0.75rem; }
-  .risk-summary { margin-bottom: 0; }
-  .person-column { width: 15.5rem; min-width: 15.5rem; }
-  th, td { min-width: 10.5rem; padding: 0.8rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
+/* Filters ----------------------------------------------------------------- */
 
 .filters {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem 1.15rem;
-  padding: 1rem 0 0;
+  gap: var(--space-sm) var(--space-md);
+  padding: var(--space-lg) 0;
 }
 
+/* text-input: 44px, hairline-strong, focus goes to 2px primary */
 .filter-input {
-  width: min(100%, 17rem);
-  padding: 0.45rem 0.7rem;
-  border: 1px solid #8d9692;
-  background: #faf8f2;
-  color: #172a2d;
+  width: min(100%, 280px);
+  height: 44px;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--rounded-md);
+  background: var(--canvas);
+  color: var(--ink);
+  font-size: 16px;
 }
 
-.filter-input::placeholder { color: #7d8a8c; }
-.filter-input:focus-visible { border-color: #006c78; }
+.filter-input::placeholder { color: var(--steel); }
 
+.filter-input:focus {
+  border: 2px solid var(--primary);
+  outline: none;
+  padding: calc(var(--space-sm) - 1px) calc(var(--space-md) - 1px);
+}
+
+/* pill-tab / pill-tab-active. The checkbox stays in the DOM for keyboard and
+ * screen-reader use; the pill is the visible control. */
 .filter-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  color: #3c4f52;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  height: 44px;
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid var(--hairline);
+  border-radius: var(--rounded-full);
+  color: var(--steel);
+  font-size: 14px;
+  font-weight: 500;
+  user-select: none;
   cursor: pointer;
 }
 
-.filter-toggle input { accent-color: #832b20; width: 1rem; height: 1rem; cursor: pointer; }
+.filter-toggle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.filter-toggle:has(input:checked) {
+  border-color: var(--ink-deep);
+  background: var(--ink-deep);
+  color: var(--on-dark);
+}
+
+.filter-toggle:has(input:focus-visible) {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 
 .filter-count {
   margin: 0 0 0 auto;
-  color: #657478;
-  font-size: 0.68rem;
+  color: var(--steel);
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+}
+
+/* Table ------------------------------------------------------------------- */
+
+.table-frame {
+  position: relative;
+  overflow-x: auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--canvas);
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: var(--space-sm) var(--space-lg);
+  border-bottom: 1px solid var(--hairline);
+  background: var(--surface);
+  color: var(--slate);
+  text-align: left;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
+/* The kicker sits on --surface, not canvas, where steel only reaches 4.17:1. */
+.week-kicker { color: var(--slate); }
+
+.week-range {
+  display: block;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+tbody th, tbody td {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--hairline-soft);
+  text-align: left;
+  vertical-align: top;
+}
+
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+
+.person-column {
+  width: 16rem;
+  min-width: 16rem;
+  background: var(--canvas);
+}
+
+.person-name {
+  display: block;
+  margin-bottom: var(--space-xs);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.capacity-cell { min-width: 11rem; }
+
+/* card-tint-peach wash + brand-orange accent for the condition to act on. */
+.capacity-cell--over {
+  box-shadow: inset 3px 0 0 var(--brand-orange);
+  background: var(--card-tint-peach);
+}
+
+.hours-ratio {
+  display: block;
+  margin-bottom: var(--space-xs);
+  color: var(--ink);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hours-ratio strong { font-weight: 600; }
+.hours-ratio > span:not(.visually-hidden) { color: var(--steel); }
+.capacity-cell--over .hours-ratio strong { color: var(--brand-orange-deep); }
+
+/* Steel drops to 3.83:1 on the peach wash, so the denominator darkens there. */
+.capacity-cell--over .hours-ratio > span:not(.visually-hidden) { color: var(--slate); }
+
+/* badge-tag-orange. DESIGN.md says to use the pastel tints generously, but a
+ * chip on every in-capacity cell — 459 of 500 rows — drowns out the 41 that
+ * need attention. Only the exception gets a chip; the norm stays quiet. */
+.over-label {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--rounded-sm);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--brand-orange-deep);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.within-label {
+  display: inline-block;
+  padding: 2px 0;
+  color: var(--steel);
+  font-size: 13px;
 }
 
 .no-matches {
-  padding: 2.5rem 0.9rem;
-  color: #506266;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.05rem;
+  padding: var(--space-section-sm) var(--space-lg);
+  color: var(--steel);
+  font-size: 16px;
 }
 
-@media (max-width: 720px) {
+/* Weekly hours editing ---------------------------------------------------- */
+
+.hours-editor {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.hours-control {
+  display: flex;
+  width: 6.5rem;
+  align-items: center;
+  height: 36px;
+  padding-right: var(--space-xs);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--rounded-md);
+  background: var(--canvas);
+}
+
+.hours-control:focus-within {
+  border: 2px solid var(--primary);
+}
+
+.hours-control input {
+  width: 3.5rem;
+  min-width: 0;
+  padding: 0 0 0 var(--space-sm);
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.hours-control span {
+  color: var(--steel);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* button-primary: purple, 8px rectangle — not a pill. */
+.save-button {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.save-button:active { background: var(--primary-pressed); }
+.save-button:disabled { background: var(--hairline); color: var(--muted); }
+
+.save-state {
+  display: block;
+  margin-top: var(--space-xxs);
+  min-height: 1.2em;
+  color: var(--steel);
+  font-size: 13px;
+}
+
+/* DESIGN.md's semantic-success green is 2.93:1 on canvas and has no darker
+ * variant in the palette, so the confirmation reads in slate instead. The
+ * green stays where it works — as tint backgrounds, not as text. */
+.save-state--success { color: var(--slate); font-weight: 500; }
+.save-state--error { color: var(--semantic-error); }
+
+/* button-secondary / button-link */
+.button {
+  padding: 10px 18px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.button--dark { border-color: var(--ink-deep); background: var(--ink-deep); color: var(--on-dark); }
+
+.button--text {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* States ------------------------------------------------------------------ */
+
+.grid-state {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xxl);
+  border: 1px solid var(--hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--canvas);
+  box-shadow: var(--elevation-1);
+}
+
+.grid-state strong { display: block; color: var(--ink); font-size: 18px; font-weight: 600; }
+.grid-state p { margin: var(--space-xxs) 0 0; color: var(--steel); font-size: 14px; }
+.grid-state--error { border-color: var(--semantic-error); }
+.grid-state--error strong { color: var(--semantic-error); }
+.grid-state .button { margin-left: auto; }
+
+.loader {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  border: 2px solid var(--hairline);
+  border-top-color: var(--primary);
+  border-radius: var(--rounded-full);
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--hairline);
+  border-radius: var(--rounded-md);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.notice--warning { border-color: var(--semantic-warning); }
+.notice .button--text { margin-left: auto; }
+
+.refresh-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  animation: sweep 1s ease-in-out infinite;
+  z-index: 3;
+}
+
+@keyframes sweep {
+  from { transform: translateX(-40%); }
+  to { transform: translateX(40%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader, .refresh-line { animation: none; }
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .app-band { padding: var(--space-xxl) var(--space-md); }
+  .app-band h1 { font-size: 28px; }
+  main { padding: var(--space-md); }
+  .capacity-toolbar { align-items: flex-start; flex-direction: column; gap: var(--space-sm); }
+  .capacity-toolbar h2 { font-size: 22px; }
   .filters { align-items: stretch; flex-direction: column; }
+  .filter-input, .filter-toggle { width: 100%; }
+  .filter-toggle { justify-content: center; }
   .filter-count { margin-left: 0; }
+  .person-column { width: 13rem; min-width: 13rem; }
+  tbody th, tbody td, thead th { padding: var(--space-sm) var(--space-md); }
 }

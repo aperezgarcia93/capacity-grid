@@ -333,6 +333,11 @@ const PersonRow = memo(function PersonRow({
               inputMode="decimal"
               value={draft}
               onChange={(event) => onDraftChange(person.id, event.target.value)}
+              // A focused number input takes the scroll wheel and silently
+              // rewrites itself. On a 500-row grid that edits someone's hours
+              // while the user is only scrolling past, so give the wheel back
+              // to the page.
+              onWheel={(event) => event.currentTarget.blur()}
               aria-invalid={saveState?.kind === 'error' ? 'true' : undefined}
               aria-describedby={saveState ? `save-state-${person.id}` : undefined}
               disabled={isSaving}

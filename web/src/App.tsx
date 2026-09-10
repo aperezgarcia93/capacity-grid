@@ -6,12 +6,18 @@ const TO = '2026-01-16'
 
 export function App() {
   return (
-    <main>
-      <h1>Team capacity</h1>
-      <p className="range">
-        {FROM} to {TO}
-      </p>
-      <CapacityGrid from={FROM} to={TO} />
-    </main>
+    <>
+      <header className="app-band">
+        <div className="band-inner">
+          <h1>Team capacity</h1>
+          <p className="range">
+            {FROM} to {TO}
+          </p>
+        </div>
+      </header>
+      <main>
+        <CapacityGrid from={FROM} to={TO} />
+      </main>
+    </>
   )
 }
