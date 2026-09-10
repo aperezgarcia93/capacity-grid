@@ -13,19 +13,15 @@
   --primary-pressed: #4534b3;
   --on-primary: #ffffff;
   --brand-navy: #0a1530;
-  --brand-navy-mid: #1a2a52;
   --brand-orange: #dd5b00;
   --brand-orange-deep: #793400;
-  --brand-green: #1aae39;
 
   /* Card tints */
   --card-tint-peach: #ffe8d4;
-  --card-tint-mint: #d9f3e1;
 
   /* Surface */
   --canvas: #ffffff;
   --surface: #f6f5f4;
-  --surface-soft: #fafaf9;
   --hairline: #e5e3df;
   --hairline-soft: #ede9e4;
   --hairline-strong: #c8c4be;
@@ -33,12 +29,11 @@
   /* Text */
   --ink-deep: #000000;
   --ink: #1a1a1a;
-  --charcoal: #37352f;
   --slate: #5d5b54;
   --steel: #787671;
-  /* stone fails WCAG AA on canvas (2.61:1) and muted worse (1.98:1), so text
-   * uses steel (4.54:1); muted is kept for disabled controls only. */
-  --stone: #a4a097;
+  /* DESIGN.md's stone (2.61:1) and muted (1.98:1) both fail WCAG AA as text,
+   * so text uses steel (4.54:1) or slate; muted survives only on disabled
+   * controls, which WCAG exempts. */
   --muted: #bbb8b1;
   --on-dark: #ffffff;
   --on-dark-muted: #a4a097;
@@ -60,14 +55,12 @@
   --space-sm: 12px;
   --space-md: 16px;
   --space-lg: 20px;
-  --space-xl: 24px;
   --space-xxl: 32px;
   --space-xxxl: 40px;
   --space-section-sm: 48px;
 
   /* Elevation */
   --elevation-1: rgba(15, 15, 15, 0.04) 0 1px 2px 0;
-  --elevation-2: rgba(15, 15, 15, 0.08) 0 4px 12px 0;
 
   /* Notion Sans is not publicly distributable; this is the fallback stack
    * DESIGN.md documents for it. No webfont request is made. */
