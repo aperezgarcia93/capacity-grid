@@ -548,3 +548,11 @@ tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
   .person-column { width: 13rem; min-width: 13rem; }
   tbody th, tbody td, thead th { padding: var(--space-sm) var(--space-md); }
 }
+
+/* The table trails the filter controls by design; fade it while it catches up
+ * so the delay reads as work in progress rather than a frozen control. */
+.table-frame--stale { opacity: 0.6; transition: opacity 120ms ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .table-frame--stale { transition: none; }
+}

@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useDeferredValue, useEffect, useRef, useState } from 'react'
 
 type Props = { from: string; to: string }
 type CapacityWeek = { start: string; end: string }
@@ -58,6 +58,15 @@ export function CapacityGrid({ from, to }: Props) {
   const [loadError, setLoadError] = useState('')
   const [nameQuery, setNameQuery] = useState('')
   const [overCapacityOnly, setOverCapacityOnly] = useState(false)
+  // The controls read live state; the table reads a deferred copy. Widening a
+  // filter has to build up to 459 rows again — ~450ms of DOM work — and
+  // without this the click is stuck behind it. Deferring lets the control
+  // answer immediately and the rows arrive after, interruptibly.
+  //
+  // These must sit above the loading/error early returns: hooks cannot be
+  // called conditionally.
+  const deferredQuery = useDeferredValue(nameQuery)
+  const deferredOverCapacityOnly = useDeferredValue(overCapacityOnly)
   const [drafts, setDrafts] = useState<Record<number, string>>({})
   const [saveStates, setSaveStates] = useState<Record<number, SaveState>>({})
   const requestVersion = useRef(0)
@@ -83,9 +92,13 @@ export function CapacityGrid({ from, to }: Props) {
       setDrafts((current) => {
         const next: Record<number, string> = {}
         for (const person of nextData.people) {
+          // The draft is a write path, so it carries the stored value exactly.
+          // formatHours rounds to one decimal for display, and seeding the
+          // field from it turned 37.25 into 37.3 the moment someone pressed
+          // Save without touching the row.
           next[person.id] = dirtyPeople.current.has(person.id)
-            ? (current[person.id] ?? formatHours(person.weeklyHours))
-            : formatHours(person.weeklyHours)
+            ? (current[person.id] ?? String(person.weeklyHours))
+            : String(person.weeklyHours)
         }
         return next
       })
@@ -187,10 +200,14 @@ export function CapacityGrid({ from, to }: Props) {
   // Filters are applied to the loaded range rather than refetched: the API
   // already returned every person, and narrowing in the browser keeps the
   // over-capacity count honest against the whole team.
-  const needle = nameQuery.trim().toLocaleLowerCase()
-  const isFiltered = needle !== '' || overCapacityOnly
+  //
+  const isCatchingUp =
+    deferredQuery !== nameQuery || deferredOverCapacityOnly !== overCapacityOnly
+
+  const needle = deferredQuery.trim().toLocaleLowerCase()
+  const isFiltered = needle !== '' || deferredOverCapacityOnly
   const visiblePeople = data.people.filter((person) => {
-    if (overCapacityOnly && !isOverallocated(person)) return false
+    if (deferredOverCapacityOnly && !isOverallocated(person)) return false
     return needle === '' || person.name.toLocaleLowerCase().includes(needle)
   })
 
@@ -251,7 +268,10 @@ export function CapacityGrid({ from, to }: Props) {
         </div>
       ) : null}
 
-      <div className="table-frame" aria-busy={loadState === 'refreshing'}>
+      <div
+        className={`table-frame${isCatchingUp ? ' table-frame--stale' : ''}`}
+        aria-busy={loadState === 'refreshing' || isCatchingUp}
+      >
         {loadState === 'refreshing' ? <div className="refresh-line" aria-hidden="true" /> : null}
         <table>
           <caption>

@@ -10,6 +10,11 @@
 
   - Eli Nakamura has 0 weekly hours but 20 assigned hours. I kept the data visible and marked the person as over capacity.
   - 41 of 500 people are over capacity. I checked several records and the result matches the seed data.
+  - Enabling the over-capacity filter was instant, but turning it off took about
+    half a second. Enabling only removes rows; disabling rebuilds 459 of them.
+    I deferred the table render so the control answers immediately (~40ms) and
+    the rows arrive behind it, with the table faded while it catches up.
+    Virtualising is the real fix, not this.
 
   ## What did the AI get wrong that you caught?
 
@@ -18,6 +23,8 @@
   I noticed the typing delay while testing the full dataset. Moving each row into a memoised component fixed it.
 
   Earlier versions also ended weeks on Friday instead of Sunday and sorted people by ID instead of name.
+
+  Also, the hours field was seeded from the display formatter, which rounds to one decimal. Someone stored at 37.25 showed 37.3, and pressing Save without editing anything wrote 37.3 back — a display format leaking into a write path.
 
   ## What would you do differently with a week?
 
