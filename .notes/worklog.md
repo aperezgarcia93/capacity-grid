@@ -9,3 +9,4 @@ left unfinished. Append as you go; a line or two per entry is right.
 - 2026-09-10: Capacity rows use explicit person-ID/week ordering so the seeded showcase people remain first and the 500-person response is deterministic.
 - 2026-09-10 clarification: Spec review corrected week metadata to Monday-Sunday and person ordering to name then ID; calculations remain clipped to requested weekdays.
 - 2026-09-10 clarification: Week metadata is derived from the validated range, not roster rows, so an empty team still returns its requested weeks.
+- 2026-09-10: Person updates accept one strict `weeklyHours` JSON property, including zero and fractions; the API returns the canonical updated person and the UI can refetch capacity to recompute every affected cell from the database.
