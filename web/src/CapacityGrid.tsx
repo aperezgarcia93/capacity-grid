@@ -34,6 +34,10 @@ function formatDate(value: string) {
   return shortDate.format(new Date(`${value}T00:00:00Z`))
 }
 
+function isOverallocated(person: PersonCapacity) {
+  return person.weeks.some((week) => week.isOverallocated)
+}
+
 function formatHours(value: number) {
   return Number.isInteger(value) ? String(value) : value.toFixed(1)
 }
@@ -52,6 +56,8 @@ export function CapacityGrid({ from, to }: Props) {
   const [data, setData] = useState<CapacityResponse | null>(null)
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [loadError, setLoadError] = useState('')
+  const [nameQuery, setNameQuery] = useState('')
+  const [overCapacityOnly, setOverCapacityOnly] = useState(false)
   const [drafts, setDrafts] = useState<Record<number, string>>({})
   const [saveStates, setSaveStates] = useState<Record<number, SaveState>>({})
   const requestVersion = useRef(0)
@@ -176,10 +182,17 @@ export function CapacityGrid({ from, to }: Props) {
     )
   }
 
-  const overallocatedPeople = data.people.reduce(
-    (count, person) => count + (person.weeks.some((week) => week.isOverallocated) ? 1 : 0),
-    0,
-  )
+  const overallocatedPeople = data.people.filter(isOverallocated).length
+
+  // Filters are applied to the loaded range rather than refetched: the API
+  // already returned every person, and narrowing in the browser keeps the
+  // over-capacity count honest against the whole team.
+  const needle = nameQuery.trim().toLocaleLowerCase()
+  const isFiltered = needle !== '' || overCapacityOnly
+  const visiblePeople = data.people.filter((person) => {
+    if (overCapacityOnly && !isOverallocated(person)) return false
+    return needle === '' || person.name.toLocaleLowerCase().includes(needle)
+  })
 
   return (
     <section className="capacity" aria-labelledby="capacity-heading">
@@ -190,6 +203,44 @@ export function CapacityGrid({ from, to }: Props) {
         </div>
         <p className="risk-summary" aria-label={`${overallocatedPeople} people over capacity`}>
           <span aria-hidden="true">{overallocatedPeople}</span><span>over capacity</span>
+        </p>
+      </div>
+
+      <div className="filters">
+        <label className="visually-hidden" htmlFor="name-filter">Filter people by name</label>
+        <input
+          id="name-filter"
+          className="filter-input"
+          type="search"
+          value={nameQuery}
+          onChange={(event) => setNameQuery(event.target.value)}
+          placeholder="Filter by name"
+          autoComplete="off"
+        />
+        <label className="filter-toggle">
+          <input
+            type="checkbox"
+            checked={overCapacityOnly}
+            onChange={(event) => setOverCapacityOnly(event.target.checked)}
+          />
+          <span>Over capacity only</span>
+        </label>
+        {isFiltered ? (
+          <button
+            className="button button--text"
+            type="button"
+            onClick={() => {
+              setNameQuery('')
+              setOverCapacityOnly(false)
+            }}
+          >
+            Clear filters
+          </button>
+        ) : null}
+        <p className="filter-count" role="status">
+          {isFiltered
+            ? `Showing ${visiblePeople.length} of ${data.people.length} people`
+            : `Showing all ${data.people.length} people`}
         </p>
       </div>
 
@@ -218,7 +269,14 @@ export function CapacityGrid({ from, to }: Props) {
             </tr>
           </thead>
           <tbody>
-            {data.people.map((person) => (
+            {visiblePeople.length === 0 ? (
+              <tr>
+                <td className="no-matches" colSpan={data.weeks.length + 1}>
+                  No one matches these filters.
+                </td>
+              </tr>
+            ) : null}
+            {visiblePeople.map((person) => (
               <PersonRow
                 key={person.id}
                 person={person}
