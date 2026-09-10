@@ -25,3 +25,9 @@
   - Add frontend tests.
   - Return the updated person’s capacity from PATCH instead of reloading all 500 people.
   - Let the user choose the date range instead of hardcoding it.
+  - Add clearer loading and error states, especially when updating weekly hours.
+  - Cover exahustively invalid ranges, partial weeks, zero-hour capacity, and assignments crossing week boundaries.
+  - Check performance with larger datasets — 500 people works, but I would test the API and grid with more realistic production volumes.
+  - Support optimistic updates — update the edited row immediately and roll it back if the request fails.
+  - Add database indexes and measure the query — make sure the capacity calculation stays fast with much larger datasets.
+  - Add concurrent-edit protection — prevent one user from silently overwriting another user’s change.
